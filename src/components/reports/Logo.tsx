@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
 
 /**
  * PDF içinde logo resmi.
- * - `public/images/logo.png` dosyasını kullanır.
+ * - `public/images/logo.svg` dosyasını kullanır.
  * - Gerekirse `width` / `height` prop’larıyla boyutu ezebilirsiniz.
  */
 const Logo: React.FC<{ width?: number; height?: number }> = ({
@@ -20,7 +20,7 @@ const Logo: React.FC<{ width?: number; height?: number }> = ({
             ? window.location.origin
             : process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
-    const src = `${baseUrl}/images/logo.png`;
+    const src = `${baseUrl}/images/logo.svg`;
 
     return (
         <Image
