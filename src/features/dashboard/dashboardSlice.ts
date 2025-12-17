@@ -71,7 +71,7 @@ export const fetchRadar = createAsyncThunk(
             // Toplam pozitif+negatif+neutral = reviewCount
             const values = categories.map(cat => {
                 const stat = biz.categoryStats.find(c => c.category === cat)!;
-                const total = stat.positiveReviews + stat.negativeReviews + stat.neutralReviews || 1;
+                const total = stat.positiveReviews + stat.negativeReviews || 1;
                 // Pozitif oranını 0-1 arası alalım (isteğe göre değiştirebilirsiniz)
                 return stat.positiveReviews / total;
             });
