@@ -164,6 +164,7 @@ export default function AspectDetailPage() {
                                 aspects: item.review.aspects ?? [coreAspect],
                                 reviewImageUrls: item.review.reviewImageUrls,
                                 reviewUrl: item.review.reviewUrl,
+                                textTranslated: item.review.textTranslated,
                             }}
                         />
                     );
