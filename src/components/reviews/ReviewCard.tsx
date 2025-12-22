@@ -118,9 +118,12 @@ export default function ReviewCard({ review }: Props) {
 
             {/* Content */}
             <CardContent className="space-y-3">
-                <p className="text-sm leading-relaxed">
-                    {highlightAspects(review.text ?? '', review.aspects ?? [])}
-                </p>
+              <p className="text-sm leading-relaxed">
+    {highlightAspects(
+        review.textTranslated?.trim() || review.text || '',
+        review.aspects ?? []
+    )}
+</p>
 
                 {/* --- EDIT MODE START --- */}
                 {latest && !editMode && (
