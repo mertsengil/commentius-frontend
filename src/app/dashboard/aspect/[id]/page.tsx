@@ -31,11 +31,11 @@ export default function AspectDetailPage() {
     const { detail, loadingDetail, detailError } = useAppSelector(selectAspectState);
 
     /* fetch / cleanup */
-    useEffect(() => {
-        if (id) dispatch(fetchAspectDetail(id));
-        return () => dispatch(clear());
-    }, [dispatch, id]);
-
+  useEffect(() => {
+    if (id) {
+        dispatch(fetchAspectDetail(id));
+    }
+}, [dispatch, id]);
     /* ─────────────── UI durumları ─────────────── */
     if (loadingDetail) {
         return (
