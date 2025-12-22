@@ -279,6 +279,7 @@ export default function CategoryDetailPage() {
                             aspects: r.aspects,
                             reviewImageUrls: r.reviewImageUrls,
                             reviewUrl: r.reviewUrl,            // dış bağlantı (varsa)
+                            textTranslated: r.textTranslated,
                         }}
 
 
