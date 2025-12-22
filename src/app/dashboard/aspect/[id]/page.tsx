@@ -3,7 +3,7 @@
 /* ------------------------------------------------------------------ */
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'next/navigation';
 
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
@@ -31,11 +31,11 @@ export default function AspectDetailPage() {
     const { detail, loadingDetail, detailError } = useAppSelector(selectAspectState);
 
     /* fetch / cleanup */
-  useEffect(() => {
-    if (id) {
-        dispatch(fetchAspectDetail(id));
-    }
-}, [dispatch, id]);
+    useEffect(() => {
+        if (id) dispatch(fetchAspectDetail(id));
+        return () => dispatch(clear());
+    }, [dispatch, id]);
+
     /* ─────────────── UI durumları ─────────────── */
     if (loadingDetail) {
         return (
@@ -77,40 +77,6 @@ export default function AspectDetailPage() {
 
     const pct = (count: number) => `${(count / total) * 100}%`;
 
-    /* ─────────────── REVIEW BAZLI NORMALIZATION ─────────────── */
-    const reviews = useMemo(() => {
-        const map = new Map<number, any>();
-
-        detail.forEach(item => {
-            const reviewId = item.review?.id ?? item.reviewId;
-
-            if (!map.has(reviewId)) {
-                map.set(reviewId, {
-                    id: reviewId,
-                    type: item.review.type,
-                    reviewerPhotoUrl: item.review.reviewerPhotoUrl ?? null,
-                    name: item.review.name ?? 'Anonim',
-                    publishedAtDate: item.review.publishedAtDate,
-                    stars: item.review.stars ?? item.review.rating ?? null,
-                    text: item.review.text,
-                    replies: item.review.replies,
-                    reviewImageUrls: item.review.reviewImageUrls,
-                    reviewUrl: item.review.reviewUrl,
-                    textTranslated: item.review.textTranslated,
-                    aspects: [],
-                });
-            }
-
-            map.get(reviewId).aspects.push({
-                id: item.id, // aspect-detail id
-                aspect: item.aspect,
-                category: item.category,
-                sentiment: item.sentiment,
-            });
-        });
-
-        return Array.from(map.values());
-    }, [detail]);
 
     /* ─────────────── Render ─────────────── */
     return (
@@ -172,15 +138,40 @@ export default function AspectDetailPage() {
                 </CardContent>
             </Card>
 
-            {/* Yorum Listesi (ARTIK TEKİL) */}
+            {/* Yorum Listesi */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {reviews.map(review => (
-                    <ReviewCard
-                        key={review.id}
-                        review={review}
-                    />
-                ))}
+                {detail.map(item => {
+                    const coreAspect = {
+                        id: item.id,           // detail kaydının id’si
+                        aspect: item.aspect,
+                        category: item.category,
+                        sentiment: item.sentiment,
+                    };
+
+                    return (
+                        <ReviewCard
+                            key={item.review.id ?? item.reviewId}
+                            review={{
+                                id: item.review.id ?? item.reviewId,
+                                type: item.review.type,           // google, vb.
+                                reviewerPhotoUrl: item.review.reviewerPhotoUrl ?? null,
+                                name: item.review.name ?? 'Anonim',
+                                publishedAtDate: item.review.publishedAtDate,
+                                stars: item.review.stars ?? item.review.rating ?? null,
+                                text: item.review.text,
+                                replies: item.review.replies,
+                                /* ⏬⏬ burada tek aspect’i gönderiyoruz ⏬⏬ */
+                                aspects: item.review.aspects ?? [coreAspect],
+                                reviewImageUrls: item.review.reviewImageUrls,
+                                reviewUrl: item.review.reviewUrl,
+                                textTranslated: item.review.textTranslated,
+                            }}
+                        />
+                    );
+                })}
             </div>
+
+
         </div>
     );
 }
